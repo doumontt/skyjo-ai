@@ -216,3 +216,29 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+.venv/
+*.pyc
+*.py[cod]
+
+# IDEs
+.idea/           # PyCharm
+.vscode/         # VS Code
+*.swp            # Vim
+*.swo
+.DS_Store        # macOS
+
+# Environment
+.env.local
+*.env
+
+# Project specific
+backend/logs/
+backend/data/
+*.db
+*.sqlite3
+
+# Frontend (for later)
+node_modules/
+.next/
