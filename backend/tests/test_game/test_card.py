@@ -1,7 +1,7 @@
 """Tests for Card class"""
 
 import pytest
-from backend.skyjo.game.card import Card
+from skyjo.game.card import Card
 
 
 class TestCard:

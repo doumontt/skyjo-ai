@@ -7,6 +7,6 @@ black>=23.7.0 #Code formatting
 ruff>=0.0.285 #Linting
 mypy>=1.4.1 #Type checking
 
-ipython>=8.14.0 #Python REPL  Maybe redundant with pycharm?
+#ipython>=8.14.0 #Python REPL  Maybe redundant with pycharm?
 #ipdb>=0.13.13 #Debugger built on top of python, not useful on pycharm
 rich>=13.5.0  # For CLI output
