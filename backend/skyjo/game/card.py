@@ -23,6 +23,7 @@ class Card:
         self.revealed = True
         return self.value
 
+
     def __str__(self) -> str:
         """String representation of a card"""
         if self.revealed:

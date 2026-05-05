@@ -1,8 +1,5 @@
 from skyjo.game.card import Card
-from skyjo.game.deck import Deck
-from skyjo.game.constants import NBR_COL, NBR_LINES
-from dataclasses import dataclass
-from typing import List, Optional
+from skyjo.game.constants import NBR_COL, NBR_ROWS
 
 
 class Board:
@@ -13,5 +10,87 @@ class Board:
 
     """
 
-    def __init__(self, card: List[Card]):
-        pass
+    def __init__(self, cards: list[Card]):
+        expected_count = NBR_ROWS * NBR_COL
+        if len(cards) != expected_count:
+            raise ValueError(
+                f"Board requires exactly {expected_count} cards, got {len(cards)}"
+            )
+        self.grid = [cards[i:i + NBR_COL] for i in range(0, len(cards), NBR_COL)]
+
+    def reveal_card(self, row: int, col: int) -> Card:
+        """
+        Reveal the card at coordinates row, col
+
+        Parameters:
+            row, col:
+                The row and column of the card that is revealed, 0-indexed
+
+        Returns:
+            Card: The revealed card
+
+        Raises:
+            IndexError: If attempting to reveal a card which is not on the board
+            OtherError: If attempting to reveal a card which is already revealed
+
+        """
+        if not 0 <= row < NBR_ROWS or not 0 <= col < NBR_COL:
+           raise IndexError("Cannot reveal a card outside the board")
+        if self.grid[row][col].revealed:
+            raise ValueError(f"Card at position ({row}, {col}) is already revealed")
+        if self.grid[row][col] is None:
+            raise IndexError("Cannot reveal a card in a column that has been eliminated")
+        else:
+            self.grid[row][col].reveal()
+        return self.grid[row][col]
+
+
+    def replace_card(self, row: int, col: int, new_card: Card) -> Card:
+        if not 0 <= row < NBR_ROWS or not 0 <= col < NBR_COL:
+           raise IndexError("Cannot change with a card outside the board")
+        if self.grid[row][col] is None:
+            raise IndexError("Cannot change with a card that has been eliminated")
+        old_card, self.grid[row][col] = self.grid[row][col], new_card
+
+        return old_card
+
+    def check_column_completion(self, col: int) -> bool:
+        if not 0 <= col < NBR_COL:
+            raise IndexError(f"Column {col} is outside the board")
+
+        column_cards = [self.grid[row][col] for row in range(NBR_ROWS)]
+
+        if any(card is None for card in column_cards):
+            return False
+
+        if not all(card.revealed for card in column_cards):
+            return False
+
+        return len({self.grid[col][i].value for i in range(NBR_ROWS)}) == 1
+
+    def remove_column(self, col: int) -> list[Card]:
+        stack = []
+        for row in range(NBR_ROWS):
+            stack.append(self.grid[row][col])
+            self.grid[row][col] = None
+        return stack
+
+    def get_card(self, row, col) -> Card|None:
+        if not 0 <= row < NBR_ROWS or not 0 <= col < NBR_COL:
+           raise IndexError(f"Cannot access the card at {row},{col}: It is outside the board")
+        return self.grid[row][col]
+
+    @property
+    def get_all_cards(self) -> list[Card|None]:
+        stack = []
+        for row in self.grid:
+            stack.extend(row)
+        return stack
+
+    def all_revealed(self) -> bool:
+        for card in self.get_all_cards:
+            if card is not None and not card.revealed:
+                return False
+        return True
+
+    #def __str__(self) -> str:

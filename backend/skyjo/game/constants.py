@@ -17,5 +17,5 @@ CARD_DISTRIBUTION = {
     12: 10,
 }
 
-NBR_LINES = 3
+NBR_ROWS = 3
 NBR_COL = 4
