@@ -1,4 +1,5 @@
 # Cards distribution in deck
+TOTAL_CARDS = 150
 CARD_DISTRIBUTION = {
     -2: 5,
     -1: 10,
