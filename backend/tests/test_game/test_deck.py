@@ -15,12 +15,17 @@ class TestDeck:
     def test_draw(self):
         deck = Deck()
         card = deck.draw()
+
         # assert
 
     def test_card_distribution(self):
         pass
 
     def test_draw_from_empty(self):
+        deck = Deck()
+        for _ in range(150):
+            deck.draw()
+        assert
         pass
 
     def test_shuffle(self):
