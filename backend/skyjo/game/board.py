@@ -9,7 +9,7 @@ class Board:
     Attributes:
 
     """
-
+    grid: list[list[Card|None]]
     def __init__(self, cards: list[Card]):
         expected_count = NBR_ROWS * NBR_COL
         if len(cards) != expected_count:
@@ -36,13 +36,15 @@ class Board:
         """
         if not 0 <= row < NBR_ROWS or not 0 <= col < NBR_COL:
            raise IndexError("Cannot reveal a card outside the board")
-        if self.grid[row][col].revealed:
-            raise ValueError(f"Card at position ({row}, {col}) is already revealed")
-        if self.grid[row][col] is None:
+
+        card = self.grid[row][col]
+        if card is None:
             raise IndexError("Cannot reveal a card in a column that has been eliminated")
+        if card.revealed:
+            raise ValueError(f"Card at position ({row}, {col}) is already revealed")
         else:
-            self.grid[row][col].reveal()
-        return self.grid[row][col]
+            card.reveal()
+        return card
 
 
     def replace_card(self, row: int, col: int, new_card: Card) -> Card:
@@ -51,7 +53,7 @@ class Board:
         if self.grid[row][col] is None:
             raise IndexError("Cannot change with a card that has been eliminated")
         old_card, self.grid[row][col] = self.grid[row][col], new_card
-
+        assert old_card is not None
         return old_card
 
     def check_column_completion(self, col: int) -> bool:
@@ -63,10 +65,13 @@ class Board:
         if any(card is None for card in column_cards):
             return False
 
+        #Avoid type mistakes by ensuring the column_cards doesn't contain any None
+        column_cards = [card for card in column_cards if card is not None]
+
         if not all(card.revealed for card in column_cards):
             return False
 
-        return len({self.grid[col][i].value for i in range(NBR_ROWS)}) == 1
+        return len({card.value for card in column_cards}) == 1
 
     def remove_column(self, col: int) -> list[Card]:
         stack = []
