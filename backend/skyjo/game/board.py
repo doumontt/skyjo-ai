@@ -48,15 +48,40 @@ class Board:
 
 
     def replace_card(self, row: int, col: int, new_card: Card) -> Card:
+        """
+        Replace the card at row, col by a new card
+        Args:
+            row: Row of the card to be replaced
+            col: Column of the card to be replaced
+            new_card: New card to put in the position
+
+        Returns: The card that was replaced
+
+        Raises: Index Error: If attempting to remove a card that does not exist
+                Value Error: If attempting to replace a card that has been removed
+
+        """
         if not 0 <= row < NBR_ROWS or not 0 <= col < NBR_COL:
            raise IndexError("Cannot change with a card outside the board")
         if self.grid[row][col] is None:
-            raise IndexError("Cannot change with a card that has been eliminated")
+            raise ValueError("Cannot change with a card that has been eliminated")
         old_card, self.grid[row][col] = self.grid[row][col], new_card
         assert old_card is not None
         return old_card
 
     def check_column_completion(self, col: int) -> bool:
+        """
+        Check if a column is constituted of cards of the same values that are revealed
+        Args:
+            col: The column to check
+
+        Returns:
+            True if the column is complete
+
+        Raises:
+            IndexError: If trying to access a column outside the board
+
+        """
         if not 0 <= col < NBR_COL:
             raise IndexError(f"Column {col} is outside the board")
 
@@ -74,6 +99,15 @@ class Board:
         return len({card.value for card in column_cards}) == 1
 
     def remove_column(self, col: int) -> list[Card]:
+        """
+        Remove the Cards of a specific column from the board
+        Args:
+            col: The column to remove
+
+        Returns:
+            A list of cards that have been removed
+
+        """
         stack = []
         for row in range(NBR_ROWS):
             stack.append(self.grid[row][col])
@@ -81,6 +115,13 @@ class Board:
         return stack
 
     def get_card(self, row, col) -> Card|None:
+        """
+        Return the card at row, col, or None if the card has been removed
+
+        Returns:
+            The Card at row, col or None
+
+        """
         if not 0 <= row < NBR_ROWS or not 0 <= col < NBR_COL:
            raise IndexError(f"Cannot access the card at {row},{col}: It is outside the board")
         return self.grid[row][col]
@@ -93,9 +134,17 @@ class Board:
         return stack
 
     def all_revealed(self) -> bool:
+        """Return true if all cards on this board are None or revealed"""
         for card in self.get_all_cards:
             if card is not None and not card.revealed:
                 return False
         return True
 
-    #def __str__(self) -> str:
+    def __str__(self) -> str:
+        """String representation of the board."""
+        lines = []
+        for row in self.grid:
+            row_str = " ".join(str(card) if card else "[XXX]" for card in row)
+            lines.append(row_str)
+        return "\n".join(lines)
+
