@@ -45,6 +45,7 @@ class Deck:
         card.reveal()
         return card
 
+
     def is_empty(self) -> bool:
         """
         Check if the deck is empty
